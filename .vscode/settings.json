@@ -1,0 +1,9 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "dist/lib/JCommander.jar",
+        "dist/lib/org.sat4j.core_2_0_5.jar",
+        "dist/lib/org.sat4j.core_trunk.jar",
+        "dist/lib/splar.jar"
+    ]
+}

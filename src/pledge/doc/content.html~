@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<STYLE>
+.bluebox  
+{  
+     background-color: #eceff6;  
+     border: 1px solid #d4dae8;  
+     color: #333333;  
+     padding: 10px;  
+     font-size: 13px;  
+ }
+</STYLE>
+
+
+<HTML>
+
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Albany"><FONT SIZE=5><B><U>PLEDGE - A Product Line EDitor and tests GEneration tool</U></B></FONT></FONT></P>
+
+<P ALIGN=LEFT><A NAME="introduction"></A><FONT FACE="Albany"><FONT SIZE=5><B>1 Introduction </B></FONT></FONT></P>
+
+<P ALIGN=LEFT><A NAME="what"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>What is PLEDGE? </I></B></FONT></FONT></P>
+
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>PLEDGE is a testing tool which allows generating and prioritizing products of a Software Product Line. It also allows loading and editing Feature Models.</FONT></FONT></div>
+
+<P ALIGN=LEFT><A NAME="features"></A></<FONT FACE="Albany"><FONT SIZE=5><B><I>Features</I></B></FONT></FONT></P>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+PLEDGE allows:
+
+<UL>
+<LI>Loading a FM from a file. PLEDGE supports the <A HREF="http://www.splot-research.org/" TARGET="_BLANK">SPLOT</a> and DIMACS (Conjunctive Normal Form) formats,</LI>
+<LI>Visualizing the FM information, like the constraints, the list of features or the type of each feature (mandatory, ...),</LI>
+<LI>Editing the FM, by adding or removing constraints,</LI>
+<LI>Generate the products to test from the FM, by specifying the number of products desired and the time allowed for generating them,</LI>
+<LI>Save the generated products to a file,</LI>
+<LI>Load an arbitrary list of products and prioritize them according to various prioritization techniques.</LI>
+</UL>
+ </FONT></FONT></div>
+
+<P ALIGN=LEFT><A NAME="usage"></A></<FONT FACE="Albany"><FONT SIZE=5><B>2 Usage</B></FONT></FONT></P>
+
+<P ALIGN=LEFT><A NAME="init"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>Starting Window </I></B></FONT></FONT></P>
+
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>The main window contains a menu and tool bar located at the top of the window, to access to the functions of the , and a status bar located at the bottom of the window.</FONT></FONT></div>
+<br/>
+
+<IMG SRC="imgs/init.png"  Border="1" style="border-color:#000000" alt="Fenêtre initiale"></IMG>
+
+<br/>
+<P ALIGN=LEFT><A NAME="menu"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>The Menu Bar </I></B></FONT></FONT></P>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+It contains 5 items :
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/menu.png"  align="Center" Border="1" style="border-color:#000000" alt="Menu"></IMG>
+</td>
+</tr>
+</table>	
+</div>
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+The <B>File</B> item allows:
+
+	<ul>
+		<li>Loading a Feature Model,</li>
+		<li>Loading an existing list of products,</li>
+		<li> Quitting the application.</li>
+	</ul>
+	</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/file.png" Border="1" style="border-color:#000000"></IMG>
+</td>
+</tr>
+</table>
+</div>
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+The <b>Execute</b> item allows:
+
+	<ul>
+		<li> Generating the products to test from the Feature Model,</li>
+		<li> Prioritizing the products generated or loaded into the application, </li>
+		<li> Stopping the execution of the application,</li>
+		<li> Saving the generated/prioritized products to a file.
+	</ul>
+	</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/exec.png" Border="1" style="border-color:#000000"></IMG>
+</td>
+</tr>
+</table>
+</div>
+
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+The <b>Configuration</b> item allows:
+
+	<ul>
+		<li> Specifying the generation technique, </i> </font></li>
+		<li> Specifying the prioritization technique.</li>
+	</ul>
+	</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/config.png" Border="1" style="border-color:#000000"></IMG>
+</td>
+</tr>
+</table>
+</div>
+
+
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+The <b>Help</b> item allows:
+
+	<ul>
+		<li> Opening this user guide,</li>
+		<li> Visualizing information about the version of the toolm</li>
+	</ul>
+	</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/help.png" Border="1" style="border-color:#000000"></IMG>
+</tr>
+</table>
+</div>
+
+
+<BR>
+<P ALIGN=LEFT><A NAME="tool"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>The Tool Bar </I></B></FONT></FONT></P>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+It contains 7 buttons which correspond to shortcuts to the main functionalities of the tool:
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/toolbar.png"  align="Center" Border="1" style="border-color:#000000"></IMG>
+</td>
+</tr>
+</table>	
+</div>
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+From left to right:
+<ul>
+	<li>File -> Load a Feature Model</li>
+	<li>File -> Load Products </li>
+	<li>File -> Exit </li>
+	<hr width="60" align="left"/>
+	<li>Execute -> Generate products</li>
+	<li>Execute -> Prioritize products</li>
+	<li>Execute -> Stop the execution</li>
+	<li>Execute -> Save the products</li>
+</ul>
+</div>
+<br/>
+
+
+
+<BR>
+<P ALIGN=LEFT><A NAME="status"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>The Status Bar </I></B></FONT></FONT></P>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<table>
+<tr>
+<td>
+Localized at the bottom of the main window, it allows visualizing the current action  performed by the tool.
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<IMG SRC="imgs/status.png"  align="Center" Border="1" style="border-color:#000000"></IMG>
+</td>
+</tr>
+</table>	
+</div>
+<br/>
+
+
+
+
+<P ALIGN=LEFT><A NAME="loadfm"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>Loading a Feature Model and Generating Products</I></B></FONT></FONT></P>
+	<div class="bluebox" style="width: 870px;"><FONT FACE="Albany"><FONT SIZE=3>PLEDGE supports the <A HREF="http://www.splot-research.org/" TARGET="_BLANK">SPLOT</a> and DIMACS (Conjunctive Normal Form) formats. After having loaded a Feature Model, the following window appears: </FONT></FONT></div>
+	<br/>
+		<IMG SRC="imgs/fm.png" Border="1" style="border-color:#000000"></IMG>
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<p>
+The upper part contains information related to the Feature Model, like the number of features, the number of constraints, ... the left part contains the list of constraints of the feature model, and the right part the constraints of the model. When requesting to generate products, the following window appears:
+</p>
+</div>	
+<br/>
+		<IMG SRC="imgs/config_generate.png" Border="1" style="border-color:#000000"></IMG>
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<p>
+This configuration window contains the parameters to set for the products' generation: the number of products desired and the amount of time in seconds allowed for generating them. After validating the generation process and the generation over, the products appear in the bottom of the window. it contains, for each product, the features selected.
+</p>
+</div>
+<br/>
+		<IMG SRC="imgs/products.png" Border="1" style="border-color:#000000"></IMG>
+<br/>
+
+
+<P ALIGN=LEFT><A NAME="prodsformat"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>Products File Format</I></B></FONT></FONT></P>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<p>
+The format used by PLEDGE to represent products is the following. The first lines of the products file contain the features index (starting at 1) and its name with an arrow between them ("->"). 
+The other lines represent the products (one line per products). For each product, its corresponding line contains the features indices separated by a semicolon, where a positive index represent a selected feature and a negative index an unselected feature. The order of the products indices is not important
+The following example contains three features and two products. The first product selects only the <i>call</i> feature while the second products selects all the features.<br><br>
+
+1->call<br>
+2->gps<br>
+3->bluetooth<br>
+1;-2;-3;<br>
+1;2;3;<br>
+
+</p>
+</div>	
+<br/>
+
+<P ALIGN=LEFT><A NAME="loadprods"></A><FONT FACE="Albany"><FONT SIZE=5><B><I>Loading Products and Prioritizing them</I></B></FONT></FONT></P>
+	<div class="bluebox" style="width: 870px;"><FONT FACE="Albany"><FONT SIZE=3>After having loaded Products, the following window appears: </FONT></FONT></div>
+	<br/>
+		<IMG SRC="imgs/products_only.png" Border="1" style="border-color:#000000"></IMG>
+<br/>
+<div class="bluebox" style="width: 870px;" align="justify"><FONT FACE="Albany"><FONT SIZE=3>
+<p>
+It contains the list of products and for each of them the features selected. After launching the prioritization, the list of products is updated.
+</p>
+</div>	
+<br/>
+
+
+
+
+
+</HTML>
