@@ -47,12 +47,14 @@ def extract_data(results_dir, samples_dir, valid_pairs, output_excel):
     df.to_excel(output_excel, index=False)
     print(f"Extraction terminée. Fichier enregistré sous {output_excel}")
 
-# Exemple d'utilisation
+# Feature model name
 data_set = "E-Shop"
-root_directory = "C:\\Users\\USER\\Desktop\\M2-IKSEM\\THESIS\\Results\\13-03-2025" + "\\" + data_set
+# Enter here the corresponding path to the saving area configured in PLEDGE
+root_directory = "PATH" + "\\" + data_set
 results_directory = root_directory + "\\Results"
 samples_directory = root_directory + "\\Samples"
-valid_pairs =  149723
+# Valid pairs must be added manually
+valid_pairs =  00
 output_file = root_directory + "\\" + data_set + "_pairwise_coverage_results.xlsx"
 
 extract_data(results_directory, samples_directory, valid_pairs, output_file)

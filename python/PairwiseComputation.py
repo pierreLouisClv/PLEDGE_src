@@ -51,6 +51,7 @@ def process_products(dir_path):
         print(f"Fichier généré : {output_file}")
 
 if __name__ == "__main__":
-    root_directory = "C:\\Users\\USER\\Desktop\\M2-IKSEM\\THESIS\\Results\\13-03-2025\\e-shop" 
-    process_directory(root_directory, samples=True) # À remplacer par le chemin réel
+    # Enter the saving area configured in PLEDGE followed by the feature model name
+    root_directory = "PATH\\e-shop" 
+    process_directory(root_directory, samples=True)
     process_directory(root_directory, samples=False)
