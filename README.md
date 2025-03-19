@@ -1,16 +1,20 @@
-# PLEDGE evolution with Novelty Score
+# PLEDGE Evolution with Novelty Score
 
-This repository contains an adaptation of PLEDGE made by Pierre-Louis Clavel for executing experiment of following pre-printed paper : Comparative Evaluation of Similarity-Based Prioritization Techniques in Search-Based Test Case Generation for Software Product Lines.
+This repository contains an adaptation of PLEDGE by Pierre-Louis Clavel for executing experiments related to the following pre-published paper: Comparative Evaluation of Similarity-Based Prioritization Techniques in Search-Based Test Case Generation for Software Product Lines.
 
-All the features of the Tool were developped by Christophe Henard. The original user guide can be in pledge_guide/.
+All tool features were originally developed by Christophe Henard. The original user guide can be found in the pledge_guide/ directory.
 
-This version provides prioritization techniques Novelty Score, Dice-Jaro-Winkler and a similarity distance Enhanced Jaro-Winkler
+This version introduces prioritization techniques such as Novelty Score, Dice-Jaro-Winkler, and an enhanced similarity distance metric: Enhanced Jaro-Winkler.
 
-To reproduce the experiment, some prerequistes are needed :
+## Prerequisites
+Before running the experiment, ensure the following setup:
 
-- Store .dimacs files into a filesystem path and put this path into loadExperimentBenchmark() method in ModelPLEDGE
-- Set a saving path area where samples and test suites will be generated into SAVING_PATH_AREA in ModelPLEDGE
-- Uncomment "List<Product> products = model.getStartingTestSuite();" line in Evolutionary Algorithm Class and comment the unpredictable generation
-- Configure benchmarks parameters with feature model name (corresponding to .dimacs file name), test suite sizes and time allowed into benchmarks variable in ModelPLEDGE class
+- Store .dimacs files in a designated file system path and specify this path in the loadExperimentBenchmark() method in ModelPLEDGE.
+- Define a save directory for generated samples and test suites by setting SAVING_PATH_AREA in ModelPLEDGE.
+- Uncomment the line List<Product> products = model.getStartingTestSuite(); in the Evolutionary Algorithm class and comment out the unpredictable generation logic.
+- Configure benchmark parameters, including the feature model name (matching the .dimacs file name), test suite sizes, and time limits in the benchmarks variable within ModelPLEDGE.
 
-Then, executes the experiment with method runCompleteExperiment() in class ModelPLEDGE
+## Running the Experiment
+To execute the experiment, call the runCompleteExperiment() method in the ModelPLEDGE class.
+
+Pairwise computation can be done with PairwiseComputation.py for each feature model. Then, export mean pairwise coverages into an Excel with ExportExcel.py. 
