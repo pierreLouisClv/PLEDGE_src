@@ -18,3 +18,5 @@ Before running the experiment, ensure the following setup:
 To execute the experiment, call the runCompleteExperiment() method in the ModelPLEDGE class.
 
 Pairwise computation can be done with PairwiseComputation.py for each feature model. Then, export mean pairwise coverages into an Excel with ExportExcel.py. 
+
+For further informations, please contact me by mail at pierre-louis.clavel@laposte.net
