@@ -49,19 +49,6 @@ public class Product extends HashSet<Integer> implements Serializable {
     }
 
     /**
-     * Update from original method getCoveredPairs
-     * Returns the t-interaction features covered by the product
-     */
-    public Set<TSet> getCoveredTFeatures(int t) throws TimeoutException {
-
-        List<Integer> pl = new ArrayList<Integer>(this);
-        int size = size();
-        Set<TSet> pairs = new HashSet<TSet>(size * (size - 1) / 2);
-        Util.nCk(size, t, pairs, pl, false, null);
-        return pairs;
-    }
-
-    /**
      * Returns the pairs covered by the product
      */
     public Set<TSet> getCoveredPairs() throws TimeoutException {

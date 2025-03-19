@@ -7,12 +7,15 @@ import pledge.core.ModelPLEDGE;
 import pledge.core.Product;
 import pledge.core.techniques.DistancesUtil;
 
+
+/**
+ * Dice-Jaro-Winkler Local Maximum Distance Enhancement prioritization technique coming from Sulaiman et al.'s work : A Dissimilarity with Dice-Jaro-Winkler Test Case Prioritization Approach for Model Based Testing in Software Product Line  
+ */
 public class SimilarityDJW implements PrioritizationTechnique {
 
+public static final String NAME = "DJW";
 
-    public static final String NAME = "DJW";
-
-    private double fitnessSum;
+private double fitnessSum;
 
 @Override
 public List<Product> prioritize(ModelPLEDGE model, List<Product> products) throws Exception {

@@ -51,19 +51,17 @@ public class EvolutionaryAlgorithm1Plus1 implements GenerationTechnique {
         PrioritizationTechnique prioritizationTechnique) 
         throws Exception 
     {
-        List<Product> products = model.getStartingTestSuite(); 
+        // Choose a predefinated test suite or a new one
+        // List<Product> products = model.getStartingTestSuite(); 
+        List<Product> products = model.getUnpredictableProducts(nbProducts);
+
         long startTimeMS = System.currentTimeMillis();
         Individual indiv = new Individual(
             model, 
-            // model.getUnpredictableProducts(nbProducts),
             products, 
             prioritizationTechnique);
         indiv.fitnessAndOrdering();
         int nbIter = 0;
-        // model.saveProducts(indiv.getProducts(), false);
-
-        // model.setCurrentAction("First twise coverage computation");
-        // model.initTWiseCoverage(3, indiv.getProducts());
 
         while (System.currentTimeMillis() - startTimeMS < timeAllowed) {
             model.setCurrentAction("Iteration number " + (nbIter + 1));
@@ -77,11 +75,6 @@ public class EvolutionaryAlgorithm1Plus1 implements GenerationTechnique {
             nbIter++;
             model.setProgress((int) ((System.currentTimeMillis() - startTimeMS) / (double) timeAllowed * 100.0));
         }
-
-        // model.setCurrentAction("Final twise coverage computation");
-        // model.exportTWiseCoverage(indiv.getProducts());
-        // model.saveProducts(indiv.getProducts(), true);
-        model.saveProductsExp2(indiv.getProducts());
         return indiv.getProducts();
     }
 

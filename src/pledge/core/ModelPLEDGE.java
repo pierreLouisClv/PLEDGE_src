@@ -53,12 +53,8 @@ import org.sat4j.specs.ISolver;
 import org.sat4j.specs.IVecInt;
 import org.sat4j.specs.TimeoutException;
 import org.sat4j.tools.ModelIterator;
-
-import pledge.core.techniques.generation.DraftAlgorithm;
 import pledge.core.techniques.generation.EvolutionaryAlgorithm1Plus1;
 import pledge.core.techniques.generation.GenerationTechnique;
-import pledge.core.techniques.generation.Unpredictable;
-import pledge.core.techniques.generation.NoveltyScore.NoveltyScoreAlgorithm;
 import pledge.core.techniques.prioritization.NoPrioritization;
 import pledge.core.techniques.prioritization.PrioritizationTechnique;
 import pledge.core.techniques.prioritization.SimilarityDJW;
@@ -105,7 +101,8 @@ public class ModelPLEDGE extends Observable {
     private static final String CORE_FEATURE = "Core";
     private static final String DEAD_FEATURE = "Dead";
     private static final String FREE_FEATURE = "Free";
-    private static final String SAVING_AREA = "C:\\Users\\USER\\Desktop\\M2-IKSEM\\THESIS\\Results\\13-03-2025";
+    // Save results of the experiment here
+    private static final String SAVING_AREA = "PATH";
     public static final String JACCARD = "JAC";
     public static final String ENHANCED_JARO_WINKLER = "EJW"; 
 
@@ -136,7 +133,6 @@ public class ModelPLEDGE extends Observable {
     private int nbProductsToGenerate = 10;
     private String fmPath;
     private int currentConstraint = -1;
-    private TWiseCoverage tWiseCoverage;
     private String distanceTechnique;
     private String filePath;
 
@@ -159,17 +155,15 @@ public class ModelPLEDGE extends Observable {
         progress = 0;
         generationTechniques = new ArrayList<GenerationTechnique>();
         generationTechniques.add(new EvolutionaryAlgorithm1Plus1());
-        generationTechniques.add(new NoveltyScoreAlgorithm());
-        generationTechniques.add(new Unpredictable());
         generationTechnique = generationTechniques.get(0);
         prioritizationTechniques = new ArrayList<PrioritizationTechnique>();
         prioritizationTechniques.add(new SimilarityGreedy());
         prioritizationTechniques.add(new SimilarityNearOptimal());
-        prioritizationTechniques.add(new NoPrioritization());
         prioritizationTechniques.add(new SimilarityNS());
         prioritizationTechniques.add(new SimilarityDJW());
         prioritizationTechnique = prioritizationTechniques.get(0);
-        distanceTechnique = ENHANCED_JARO_WINKLER;
+        // Set the distance to test in prioritization technique
+        distanceTechnique = JACCARD;
     }
 
     /**
@@ -718,145 +712,20 @@ public class ModelPLEDGE extends Observable {
         notifyObservers(featureModelConstraints);
     }
 
-    public void generateSamplesForTestSuiteSizesDefinition() throws Exception
-    {
-        String[] fmNames = { "e-shop"
-            // "Amazon", "Drupal", "DSSample", "WebPortal", "Drupal", "SPLOT-3CNF-FM-1000-200-0,50-SAT-1", "CocheEcologico", "Printers", "SPLOT-3CNF-FM-1000-200-0,50-SAT-7" 
-            };
-        for (String fmName : fmNames)
-        {
-            int minSize = 3;
-            int maxSize = 100;
-            int size = minSize;
-            String fmPath = "C:\\Users\\USER\\Documents\\DataSet\\" + fmName + ".dimacs";
-            loadFeatureModel(fmPath, featureModelFormat.DIMACS);
-            while (size <= maxSize)
-            {
-                nbProductsToGenerate = size;
-                currExecution = 1;
-                while (currExecution <= MAX_EXECUTION)
-                {
-                    resetSolver();
-                    try{
-                        List<Product> prods = getUnpredictableProducts(nbProductsToGenerate);
-                        saveSample(prods);
-                    } catch
-                    (Exception e)
-                    {
-                        currExecution--;
-                    }
-                    currExecution++;
-
-                }
-                currExecution = 1;
-                size++;
-            }       
-        }
-    }
-
-
-    ExpBenchmark[] benchmarks = {
-        // new ExpBenchmark("Amazon", 8000, new int[] { 31, 47, 78  }),
-        // new ExpBenchmark("DSSample", 6000, new int[] { 16, 23, 46  }),
-        // new ExpBenchmark("WebPortal", 6000, new int[] { 6, 8, 16  }),
-        // new ExpBenchmark("Drupal", 6000, new int[] { 6, 7, 11 }),
-        new ExpBenchmark("E-shop", 20000, new int[] { 13  }),
-        // new ExpBenchmark("Printers", 15000, new int[] { 6, 9, 21  }),
-        // new ExpBenchmark("CocheEcologico", 10000, new int[] { 6, 9, 17  }),
-        // new ExpBenchmark("SPLOT-3CNF-FM-1000-200-0,50-SAT-1", 30000, new int[] { 13, 20, 43  }),
-        // new ExpBenchmark("SPLOT-3CNF-FM-1000-200-0,50-SAT-7", 30000, new int[] { 9, 12, 22  })
-    };
 
     /**
      * Generate products.
      * @throws Exception if an error occurs during the generation.
      */
     public void generateProducts() throws Exception {
-        // generateSamplesForTestSuiteSizesDefinition();
-        int benchmarksIndex = 0;
-        while (benchmarksIndex < benchmarks.length)
-        {
-            loadBenchmark(benchmarks[benchmarksIndex]);
-            // generateSamples();
-            run();
-            benchmarksIndex++;
-        }
 
-
-        // setRunning(true);
-        // setIndeterminate(false);
-        // setGlobalAction(GLOBAL_ACTION_GENERATING_PRODUCTS);
-        // products = generationTechnique.generateProducts(this, nbProductsToGenerate, generationTimeMSAllowed, prioritizationTechnique);
-        // setRunning(false);
-        // setChanged();
-        // notifyObservers();
-    }
-
-    public void loadBenchmark(ExpBenchmark benchmark) throws Exception
-    {
-        String benchmarkPath = "C:\\Users\\USER\\Documents\\DataSet\\" + benchmark.fmName + ".dimacs";
-        loadFeatureModel(benchmarkPath, FeatureModelFormat.DIMACS);
-        generationTimeMSAllowed = benchmark.timeAllowed;
-        suiteSizes = benchmark.sizes;
-    }
-
-    int[] suiteSizes;
-    int techCount = 1;
-    int currExecution = 1;
-    String techName;
-
-    private static final int MAX_EXECUTION = 30; 
-
-    public void run() throws Exception {
         setRunning(true);
         setIndeterminate(false);
-        techCount = 1;
-        techName = "Greedy_EJW";
-        runExp2(new SimilarityGreedy(), ENHANCED_JARO_WINKLER);
-        techCount++;
-        techName = "NearOptimal_EJW";
-        runExp2(new SimilarityNearOptimal(), ENHANCED_JARO_WINKLER);
-        techCount++;
-        techName = "NoveltyScore";
-        runExp2(new SimilarityNS(), "NS");
-        techCount++;
-        techName = "Greedy_JAC";
-        runExp2(new SimilarityGreedy(), JACCARD);
-        techCount++;
-        techName = "Dice-JW";
-        runExp2(new SimilarityDJW(), "DJW");
+        setGlobalAction(GLOBAL_ACTION_GENERATING_PRODUCTS);
+        products = generationTechnique.generateProducts(this, nbProductsToGenerate, generationTimeMSAllowed, prioritizationTechnique);
+        setRunning(false);
         setChanged();
         notifyObservers();
-    }
-
-    int currTestSuiteSizeIndex = 0;
-    int currTimeAllowedIndex = 0;
-
-    private void runExp2(PrioritizationTechnique prioTechnique, String distance)
-    {
-        currTestSuiteSizeIndex = 0;
-        distanceTechnique = distance;
-        while (currTestSuiteSizeIndex < suiteSizes.length)
-        {
-            nbProductsToGenerate = suiteSizes[currTestSuiteSizeIndex];
-            while (currExecution <= 30)
-            {
-                setGlobalAction("Tech " + techName + ", Suite size : " + nbProductsToGenerate + ", Execution " + currExecution);
-                try {
-                    resetSolver();
-                    products = new EvolutionaryAlgorithm1Plus1().generateProducts(this, nbProductsToGenerate, generationTimeMSAllowed, prioTechnique);
-                }
-                catch (Exception e)
-                {
-                    setGlobalAction("Error");
-                    System.out.println("**** Error during execution of fm " + featureModelName + " a step : " + "Tech " + techName + ", Suite size : " + nbProductsToGenerate + ", Execution " + currExecution);
-                    currExecution--;
-                }
-                currExecution++;
-            }
-            currExecution = 1;
-            currTestSuiteSizeIndex++;
-        }
     }
 
     private void resetSolver() throws Exception
@@ -875,11 +744,6 @@ public class ModelPLEDGE extends Observable {
         solver.setOrder(order);
         solverIterator = new ModelIterator(solver);
         solverIterator.setTimeoutMs(ITERATOR_TIMEOUT);
-    }
-
-    private void updateFile(int[] firstTSets, int[] finalTSets)
-    {
-
     }
 
     /**
@@ -917,119 +781,42 @@ public class ModelPLEDGE extends Observable {
         return pairs;
     }
 
-    // Test
-    private Set<TSet> computeValidTInteraction(int t) throws TimeoutException {
-        Set<TSet> tInteractionFeatures = new HashSet<TSet>();
-
-        List<Integer> extendedFeatures = new ArrayList<Integer>(featuresIntList.size() * 2);
-
-        for (Integer i : featuresIntList) {
-            extendedFeatures.add(i);
-            extendedFeatures.add(-i);
-        }
-
-        int size = extendedFeatures.size();
-
-        Util.nCk(size, t, tInteractionFeatures, extendedFeatures, true, solver);
-
-        return tInteractionFeatures;
-    }
-
-    // Test
-    public String getTwiseCoverage() throws TimeoutException {
-        setRunning(true);
-        setIndeterminate(false);
-        setGlobalAction(GLOBAL_ACTION_COVERAGE);
-        setCurrentAction(CURRENT_ACTION_PRODUCT_PAIRS);
-
-        String content = "";
-        int[] tVals = { 2, 3 };
-
-        for (int t : tVals)
-        {
-            Set<TSet> productsTInteractions = new HashSet<TSet>();
-
-            int i = 0;
-            for (Product p : products) {
-                setCurrentAction(CURRENT_ACTION_PRODUCT_PAIRS + " product " + i);
-                productsTInteractions.addAll(p.getCoveredTFeatures(t));
-                setProgress((int) (((double) i / (double) products.size()) * 100.0));
-                i++;
-            }
-    
-            int d1 = productsTInteractions.size();
-            int d2 =  0;
-            double cov = 0;
-            if (solver != null) {
-    
-                setIndeterminate(true);
-                setCurrentAction(CURRENT_ACTION_MODEL_PAIRS);
-                d2 = computeValidTInteraction(t).size();
-    
-    
-                cov = (double) d1 / d2 * 100.0;
-            }
-            else
-                cov = d1;
-            content += "Number of valid " + t + "-interactions of the model: " + d2 + "\nNumber of" + t + "-interactions covered by the products: " + d1 + "\n\nCoverage: " + new DecimalFormat("#.##").format(cov) + "%\n";
-        }
-        return content;
-    }
 
     /**
      * Compute the pairwise coverage of the products.
      * @return the pairwise coverage of the products.
      */
     public String getPairwiseCoverage() throws TimeoutException {
-        int validPairs = 2592;
-        // d2 = 149723; // E-Shop
-        // // d2 =  476386; // axTLS
-        // // d2 = 2910229; //eCos icse-11
-        // d2 = 1861476; //GeneratedFM 
-        double firstSuiteCov = 0;
-        double finalCov = 0;
-
         setRunning(true);
         setIndeterminate(false);
         setGlobalAction(GLOBAL_ACTION_COVERAGE);
         setCurrentAction(CURRENT_ACTION_PRODUCT_PAIRS);
 
-        int pairs = tWiseCoverage.getTSetNb(2, false);
-        if (pairs != 0)
-        {
-            firstSuiteCov = (double) pairs / validPairs * 100.0;
-        }
         Set<TSet> productsPairs = new HashSet<TSet>();
+        int validPairs;
+        double cov;
 
-        // int i = 0;
-        // for (Product p : products) {
-        //     setCurrentAction(CURRENT_ACTION_PRODUCT_PAIRS + " product " + i);
-        //     productsPairs.addAll(p.getCoveredPairs());
-        //     setProgress((int) (((double) i / (double) products.size()) * 100.0));
-        //     i++;
-        // }
-        int d1 = tWiseCoverage.getTSetNb(2, true);
+        int i = 0;
+        for (Product p : products) {
+            setCurrentAction(CURRENT_ACTION_PRODUCT_PAIRS + " product " + i);
+            productsPairs.addAll(p.getCoveredPairs());
+            setProgress((int) (((double) i / (double) products.size()) * 100.0));
+            i++;
+        }
+
+        setRunning(false);
 
         if (solver != null) {
 
             setIndeterminate(true);
             setCurrentAction(CURRENT_ACTION_MODEL_PAIRS);
-            if (validPairs == 0) validPairs = computeValidPairs().size();
+            validPairs = computeValidPairs().size();
 
-            finalCov = (double) d1 / validPairs * 100.0;
-        }
+            cov = (double) productsPairs.size() / validPairs * 100.0;
+            return "Number of valid pairs of the model: " + validPairs + "\nNumber of pairs covered by the products: " + productsPairs.size() + "\n\nCoverage: " + new DecimalFormat("#.##").format(cov) + "%";
+        }        
         else
-            finalCov = d1;
-        double covDiff = finalCov - firstSuiteCov;
-        setRunning(false);
-        
-        return "Number of valid pairs of the model: " + validPairs + "\n"
-            + "Number of pairs after first unpredicatble generation : " + pairs + " (" + new DecimalFormat("#.##").format(firstSuiteCov) + "%)\n"
-            + "Number of final pairs : " + d1 + " (" + new DecimalFormat("#.##").format(finalCov) + "%)\n\n"
-            + "Coverage difference : " + (finalCov >= 0 ? "+ " : "- ") + new DecimalFormat("#.##").format(covDiff) + "%";
-        // return "Number of valid pairs of the model: " + d2 + "\nNumber of pairs covered by the products: " + d1 + "\n\nCoverage: " + new DecimalFormat("#.##").format(finalCov) + "%";
-        // else
-        //     return "Number of pairs covered by the products: " + d1 ;
+            return "Number of pairs covered by the products: " + productsPairs.size() ;
     }
 
     /**
@@ -1109,18 +896,6 @@ public class ModelPLEDGE extends Observable {
         return distanceTechnique;
     }
 
-    public void initTWiseCoverage(int t, List<Product> products)
-    {
-        tWiseCoverage = new TWiseCoverage(t, featureModelName, generationTimeMSAllowed, nbProductsToGenerate);
-        tWiseCoverage.updateFirstTSetsNb(products);
-    }
-
-    public void exportTWiseCoverage(List<Product> products)
-    {
-        tWiseCoverage.updateFinalTSetsNb(products);
-    }
-
-
     /**
      * Save products to a file.
      * @param outFile the file to write the products in.
@@ -1152,166 +927,6 @@ public class ModelPLEDGE extends Observable {
         out.close();
 
 
-    }
-
-    public void generateSamples() throws Exception
-    {
-        currTestSuiteSizeIndex = 0;
-        while (currTestSuiteSizeIndex < suiteSizes.length)
-        {
-            nbProductsToGenerate = suiteSizes[currTestSuiteSizeIndex];
-            currExecution = 1;
-            while (currExecution <= MAX_EXECUTION)
-            {
-                resetSolver();
-                List<Product> prods = getUnpredictableProducts(nbProductsToGenerate);
-                saveSample(prods);
-                currExecution++;
-            }
-            currExecution = 1;
-            currTestSuiteSizeIndex++;
-        }        
-    }
-
-    public void saveSample(List<Product> products) throws Exception
-    {
-        String sizeFolder = nbProductsToGenerate + "prods";
-        Path exportPath = Paths.get(SAVING_AREA, featureModelName, "Samples", sizeFolder);
-        File dir = new File(exportPath.toUri());
-        if (!dir.exists()){
-            dir.mkdirs();
-        }
-        Files.exists(exportPath);
-        if (!Files.exists(exportPath))
-        {
-            Files.createDirectory(exportPath);
-        }
-
-        String fileName = "Sample_" + currExecution + ".txt"; 
-
-        BufferedWriter out = new BufferedWriter(new FileWriter(dir.getPath() + "\\" + fileName));
-
-        for (Product product : products) {
-            int done = 0;
-            for (Integer feature : product) {
-                out.write("" + feature);
-                if (done < product.size()) {
-                    out.write(";");
-                }
-                done++;
-            }
-
-            out.newLine();
-        }
-        out.close();
-    }
-
-    public void saveProductsExp2(List<Product> prods) throws Exception
-    {
-        String techniqueFolder = techName;
-        String sizeFolder = nbProductsToGenerate + "prods";
-        Path exportPath = Paths.get(SAVING_AREA, featureModelName, "Results", techniqueFolder, sizeFolder);
-        File dir = new File(exportPath.toUri());
-        if (!dir.exists()){
-            dir.mkdirs();
-        }
-        Files.exists(exportPath);
-        if (!Files.exists(exportPath))
-        {
-            Files.createDirectory(exportPath);
-        }
-
-        String fileName = "TestSuite_" + currExecution + ".txt"; 
-
-        BufferedWriter out = new BufferedWriter(new FileWriter(dir.getPath() + "\\" + fileName));
-
-        for (Product product : prods) {
-            int done = 0;
-            for (Integer feature : product) {
-                out.write("" + feature);
-                if (done < product.size()) {
-                    out.write(";");
-                }
-                done++;
-            }
-
-            out.newLine();
-        }
-        out.close();
-    }
-
-        /**
-     * Save products to a file.
-     * @param outFile the file to write the products in.
-     * @throws Exception if an error occurs while writing the products to the file.
-     */
-    public void saveProducts(List<Product> products, boolean isFinal) throws Exception {
-        String techniqueFolder = generationTechnique.getName().replaceAll(" ", "_") + "-" + prioritizationTechnique.getName().replaceAll(" ", "_") + "-" + distanceTechnique;
-        String sizeFolder = nbProductsToGenerate + "prods";
-        String timeAllowed = (generationTimeMSAllowed / 1000) + "seconds";
-        Path exportPath = Paths.get(SAVING_AREA, featureModelName, techniqueFolder, sizeFolder, timeAllowed);
-        File dir = new File(exportPath.toUri());
-        if (!dir.exists()){
-            dir.mkdirs();
-        }
-        Files.exists(exportPath);
-        if (!Files.exists(exportPath))
-        {
-            Files.createDirectory(exportPath);
-        }
-
-        String fileName = "TestSuiteN" + currExecution + "-" + (isFinal ? "End" : "Start") + ".txt"; 
-
-        BufferedWriter out = new BufferedWriter(new FileWriter(dir.getPath() + "\\" + fileName));
-
-        for (Product product : products) {
-            int done = 0;
-            for (Integer feature : product) {
-                out.write("" + feature);
-                if (done < product.size()) {
-                    out.write(";");
-                }
-                done++;
-            }
-
-            out.newLine();
-        }
-        out.close();
-
-
-    }
-
-        /**
-     * Load products from a file.
-     * @return a list of products loaded from the file.
-     * @throws Exception if an error occurs while reading the products from the file.
-     */
-    public List<Product> getStartingTestSuite() throws Exception {
-        String techniqueFolder = generationTechnique.getName().replaceAll(" ", "_") + "-" + prioritizationTechnique.getName().replaceAll(" ", "_") + "-" + distanceTechnique;
-        String sizeFolder = nbProductsToGenerate + "prods";
-        Path samplesPath = Paths.get(SAVING_AREA, featureModelName, "Samples", sizeFolder);
-
-        String fileName = "Sample_" + currExecution + ".txt";
-        File file = new File(samplesPath.toFile(), fileName);
-
-        List<Product> products = new ArrayList<>();
-        
-        if (!file.exists()) {
-            throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] features = line.split(";");
-                Product product = new Product();
-                for (String feature : features) {
-                    product.add(Integer.parseInt(feature));
-                }
-                products.add(product);
-            }
-        }
-        return products;
     }
 
     /**
@@ -1412,6 +1027,250 @@ public class ModelPLEDGE extends Observable {
         setChanged();
         notifyObservers();
     }
+
+
+    //#region PAIRWISE COVERAGE EXPERIMENT : Comparative Evaluation of Similarity-Based Prioritization Techniques in Search-Based Test Case Generation for Software Product Lines
     
-    
+    public void runCompleteExperiment() throws Exception
+    {
+        int benchmarksIndex = 0;
+        while (benchmarksIndex < benchmarks.length)
+        {
+            loadExperimentBenchmark(benchmarks[benchmarksIndex]);
+            generateSamples();
+            executeTechniques();
+            benchmarksIndex++;
+        }
+    }
+
+    // Configure feature models and experiment parameters here
+    ExpBenchmark[] benchmarks = {
+        new ExpBenchmark("Amazon", 8000, new int[] { 31, 47, 78  }),
+        new ExpBenchmark("DSSample", 6000, new int[] { 16, 23, 46  }),
+        new ExpBenchmark("WebPortal", 6000, new int[] { 6, 8, 16  }),
+        new ExpBenchmark("Drupal", 6000, new int[] { 6, 7, 11 }),
+        new ExpBenchmark("E-shop", 20000, new int[] { 6, 8, 13 }),
+        new ExpBenchmark("Printers", 15000, new int[] { 6, 9, 21  }),
+        new ExpBenchmark("CocheEcologico", 10000, new int[] { 6, 9, 17  }),
+        new ExpBenchmark("SPLOT-3CNF-FM-1000-200-0,50-SAT-1", 30000, new int[] { 13, 20, 43  }),
+        new ExpBenchmark("SPLOT-3CNF-FM-1000-200-0,50-SAT-7", 30000, new int[] { 9, 12, 22  })
+    };
+
+    int MAX_EXECUTION = 30;    
+    /***
+     * Load a benchmark used for the experiment
+     * @param benchmark
+     * @throws Exception
+     */
+    public void loadExperimentBenchmark(ExpBenchmark benchmark) throws Exception
+    {
+        // Store feature model .dimacs in this path
+        String benchmarkPath = "PATH\\" + benchmark.fmName + ".dimacs";
+        loadFeatureModel(benchmarkPath, FeatureModelFormat.DIMACS);
+        generationTimeMSAllowed = benchmark.timeAllowed;
+        suiteSizes = benchmark.sizes;
+    }
+
+    int[] suiteSizes;
+    int techCount = 1;
+    int currExecution = 1;
+    String techName;
+
+    /**
+     * Execute techniques on the loaded benchmark
+     * @throws Exception
+     */
+    public void executeTechniques() throws Exception {
+        setRunning(true);
+        setIndeterminate(false);
+        techCount = 1;
+        techName = "Greedy_EJW";
+        runExperiment(new SimilarityGreedy(), ENHANCED_JARO_WINKLER);
+        techCount++;
+        techName = "NearOptimal_EJW";
+        runExperiment(new SimilarityNearOptimal(), ENHANCED_JARO_WINKLER);
+        techCount++;
+        techName = "NoveltyScore";
+        runExperiment(new SimilarityNS(), "NS");
+        techCount++;
+        techName = "Greedy_JAC";
+        runExperiment(new SimilarityGreedy(), JACCARD);
+        techCount++;
+        techName = "Dice-JW";
+        runExperiment(new SimilarityDJW(), "DJW");
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
+     * Run experiment with the defined prioritization technique and (optional) disance mesure
+     * @param prioTechnique
+     * @param distance
+     */
+    private void runExperiment(PrioritizationTechnique prioTechnique, String distance)
+    {
+        int currTestSuiteSizeIndex = 0;
+        distanceTechnique = distance;
+        // Test suite size parameter
+        while (currTestSuiteSizeIndex < suiteSizes.length)
+        {
+            nbProductsToGenerate = suiteSizes[currTestSuiteSizeIndex];
+            // Executions
+            while (currExecution <= MAX_EXECUTION)
+            {
+                setGlobalAction("Tech " + techName + ", Suite size : " + nbProductsToGenerate + ", Execution " + currExecution);
+                try {
+                    // Reset SAT Solver before execution
+                    resetSolver();
+                    // Generation with EA (1+1)
+                    products = new EvolutionaryAlgorithm1Plus1().generateProducts(this, nbProductsToGenerate, generationTimeMSAllowed, prioTechnique);
+                    // Products saved
+                    experimentSavingProducts(products);
+                }
+                catch (Exception e)
+                {
+                    setGlobalAction("Error");
+                    System.out.println("**** Error during execution of fm " + featureModelName + " a step : " + "Tech " + techName + ", Suite size : " + nbProductsToGenerate + ", Execution " + currExecution);
+                    currExecution--;
+                }
+                currExecution++;
+            }
+            currExecution = 1;
+            currTestSuiteSizeIndex++;
+        }
+    }
+
+    /**
+     * Return the Test Suite sample from files from a feature model name, test suite and current execution. Throws Exception if no file exists.
+     * @return a list of products loaded from the file.
+     * @throws Exception if an error occurs while reading the products from the file.
+     */
+    public List<Product> getStartingTestSuite() throws Exception {
+        String techniqueFolder = generationTechnique.getName().replaceAll(" ", "_") + "-" + prioritizationTechnique.getName().replaceAll(" ", "_") + "-" + distanceTechnique;
+        String sizeFolder = nbProductsToGenerate + "prods";
+        Path samplesPath = Paths.get(SAVING_AREA, featureModelName, "Samples", sizeFolder);
+
+        String fileName = "Sample_" + currExecution + ".txt";
+        File file = new File(samplesPath.toFile(), fileName);
+
+        List<Product> products = new ArrayList<>();
+        
+        if (!file.exists()) {
+            throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] features = line.split(";");
+                Product product = new Product();
+                for (String feature : features) {
+                    product.add(Integer.parseInt(feature));
+                }
+                products.add(product);
+            }
+        }
+        return products;
+    }
+
+    /***
+     * Save Test Suite into file in a path composed of feature model name, technique and test suite size
+     * @param prods
+     * @throws Exception
+     */
+    public void experimentSavingProducts(List<Product> prods) throws Exception
+    {
+        String techniqueFolder = techName;
+        String sizeFolder = nbProductsToGenerate + "prods";
+        Path exportPath = Paths.get(SAVING_AREA, featureModelName, "Results", techniqueFolder, sizeFolder);
+        File dir = new File(exportPath.toUri());
+        if (!dir.exists()){
+            dir.mkdirs();
+        }
+        Files.exists(exportPath);
+        if (!Files.exists(exportPath))
+        {
+            Files.createDirectory(exportPath);
+        }
+
+        String fileName = "TestSuite_" + currExecution + ".txt"; 
+
+        BufferedWriter out = new BufferedWriter(new FileWriter(dir.getPath() + "\\" + fileName));
+
+        for (Product product : prods) {
+            int done = 0;
+            for (Integer feature : product) {
+                out.write("" + feature);
+                if (done < product.size()) {
+                    out.write(";");
+                }
+                done++;
+            }
+
+            out.newLine();
+        }
+        out.close();
+    }
+
+    /**
+     * Generate unpredictable samples for the loaded feature model and for each test suite size. Then save it
+     * @throws Exception
+     */
+    public void generateSamples() throws Exception
+    {
+        int currTestSuiteSizeIndex = 0;
+        while (currTestSuiteSizeIndex < suiteSizes.length)
+        {
+            nbProductsToGenerate = suiteSizes[currTestSuiteSizeIndex];
+            currExecution = 1;
+            while (currExecution <= MAX_EXECUTION)
+            {
+                resetSolver();
+                List<Product> prods = getUnpredictableProducts(nbProductsToGenerate);
+                saveSample(prods);
+                currExecution++;
+            }
+            currExecution = 1;
+            currTestSuiteSizeIndex++;
+        }        
+    }
+
+    /**
+     * Save sample into a file in path composed of feature model name and test suite size
+     * @param products
+     * @throws Exception
+     */
+    public void saveSample(List<Product> products) throws Exception
+    {
+        String sizeFolder = nbProductsToGenerate + "prods";
+        Path exportPath = Paths.get(SAVING_AREA, featureModelName, "Samples", sizeFolder);
+        File dir = new File(exportPath.toUri());
+        if (!dir.exists()){
+            dir.mkdirs();
+        }
+        Files.exists(exportPath);
+        if (!Files.exists(exportPath))
+        {
+            Files.createDirectory(exportPath);
+        }
+
+        String fileName = "Sample_" + currExecution + ".txt"; 
+
+        BufferedWriter out = new BufferedWriter(new FileWriter(dir.getPath() + "\\" + fileName));
+
+        for (Product product : products) {
+            int done = 0;
+            for (Integer feature : product) {
+                out.write("" + feature);
+                if (done < product.size()) {
+                    out.write(";");
+                }
+                done++;
+            }
+
+            out.newLine();
+        }
+        out.close();
+    }
+
 }

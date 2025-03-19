@@ -8,12 +8,14 @@ import pledge.core.ModelPLEDGE;
 import pledge.core.Product;
 import pledge.core.techniques.DistancesUtil;
 
+/**
+ * Novelty Score prioritization technique based on Xiang et al.'s work : Looking for Novelty in Search-Based Software Prodcut Lines
+ */
 public class SimilarityNS implements PrioritizationTechnique {
     
     public static final String NAME = "Novelty Score";
 
     private double fitnessSum;
-
 
        /**
      * Return the name of this technique.
@@ -24,59 +26,8 @@ public class SimilarityNS implements PrioritizationTechnique {
         return NAME;
     }
 
-    // @Override
-    // public List<Product> prioritize(ModelPLEDGE model, List<Product> products) throws Exception {
-    //     int k = products.size(); // Paramètre k pour le calcul du Novelty Score
-    //     int size = products.size();
-    //     List<Product> prioritizedProducts = new ArrayList<>(size);
-    //     List<Product> productsCopy = new ArrayList<>(products);
-    //     double[][] distancesMatrix = new double[size][size];
-    //     double[] noveltyScores = new double[size];
-
-    //     // Calcul des distances entre tous les produits
-    //     for (int i = 0; i < size; i++) {
-    //         for (int j = i + 1; j < size; j++) {
-    //             double dist = DistancesUtil.getAntiDiceDistance(productsCopy.get(i), productsCopy.get(j));
-    //             distancesMatrix[i][j] = dist;
-    //             distancesMatrix[j][i] = dist;
-    //         }
-    //     }
-
-    //     // Calcul des Novelty Scores
-    //     for (int i = 0; i < size; i++) {
-    //         double[] sortedDistances = Arrays.copyOf(distancesMatrix[i], size);
-    //         Arrays.sort(sortedDistances);
-    //         double noveltyScore = 0;
-    //         for (int j = 0; j < k; j++) {
-    //             noveltyScore += sortedDistances[j];
-    //         }
-    //         noveltyScores[i] = noveltyScore / k; // Moyenne des k plus proches voisins
-    //     }
-
-    //     // Priorisation basée sur le Novelty Score (ordre décroissant)
-    //     while (!productsCopy.isEmpty()) {
-    //         // Trouver le produit avec le Novelty Score maximum
-    //         int maxIndex = -1;
-    //         double maxScore = Double.NEGATIVE_INFINITY;
-    //         for (int i = 0; i < productsCopy.size(); i++) {
-    //             if (noveltyScores[i] > maxScore) {
-    //                 maxScore = noveltyScores[i];
-    //                 maxIndex = i;
-    //             }
-    //         }
-
-    //         // Ajouter à la liste priorisée
-    //         if (maxIndex != -1) {
-    //             prioritizedProducts.add(productsCopy.get(maxIndex));
-    //             productsCopy.remove(maxIndex);
-    //         }
-    //     }
-
-    //     return prioritizedProducts;
-    // }
-
     @Override
-public List<Product> prioritize(ModelPLEDGE model, List<Product> products) throws Exception {
+    public List<Product> prioritize(ModelPLEDGE model, List<Product> products) throws Exception {
     int k = products.size(); // Paramètre k pour le calcul du Novelty Score
     int size = products.size();
     List<Product> prioritizedProducts = new ArrayList<>(size);

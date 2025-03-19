@@ -73,7 +73,7 @@ public class DistancesUtil {
         return getSetBasedDistance(p1, p2, 2.0);
     }
 
-        /**
+    /**
      * Return the enhanced Jaro-Winkler distance between the products.
      * @return a double representing the distance between two products.
      */
@@ -119,6 +119,12 @@ public class DistancesUtil {
         return 1.0 - (jaroDistance + (degreeOfDifference * (1.0 - jaroDistance)));
     }
 
+    /**
+     * Dice-Jaro-Winkler distance
+     * @param p1
+     * @param p2
+     * @return
+     */
     public static double getDiceJaroWinklerDistance(Product p1, Product p2) {
         double alpha = 0.5; // Pondération entre Dice et Jaro-Winkler
     

@@ -1,22 +1,16 @@
-# PLEDGE - A Product Line EDitor and tests GEneration tool
-PLEDGE is a testing tool which allows generating and prioritizing products of a Software Product Line. It also allows loading and editing Feature Models.
+# PLEDGE evolution with Novelty Score
 
-PLEDGE allows:
+This repository contains an adaptation of PLEDGE made by Pierre-Louis Clavel for executing experiment of following pre-printed paper : Comparative Evaluation of Similarity-Based Prioritization Techniques in Search-Based Test Case Generation for Software Product Lines.
 
-* Loading a FM from a file. PLEDGE supports the SPLOT and DIMACS (Conjunctive Normal Form) formats,
-* Visualizing the FM information, like the constraints, the list of features or the type of each feature (mandatory, ...),
-* Editing the FM, by adding or removing constraints,
-* Generate the products to test from the FM, by specifying the number of products desired and the time allowed for generating them,
-* Save the generated products to a file,
-* Load an arbitrary list of products and prioritize them according to various prioritization techniques.
+All the features of the Tool were developped by Christophe Henard. The original user guide can be in pledge_guide/.
 
+This version provides prioritization techniques Novelty Score, Dice-Jaro-Winkler and a similarity distance Enhanced Jaro-Winkler
 
-For more information, check the documentation embedded in the tool or [the online version](http://www.research.henard.net/SPL/PLEDGE/doc/).
+To reproduce the experiment, some prerequistes are needed :
 
-The tool uses the [Sat4j](http://www.sat4j.org/), [SPLAR](http://code.google.com/p/splar/) and [JCommander](http://jcommander.org/) libraries.
+- Store .dimacs files into a filesystem path and put this path into loadExperimentBenchmark() method in ModelPLEDGE
+- Set a saving path area where samples and test suites will be generated into SAVING_PATH_AREA in ModelPLEDGE
+- Uncomment "List<Product> products = model.getStartingTestSuite();" line in Evolutionary Algorithm Class and comment the unpredictable generation
+- Configure benchmarks parameters with feature model name (corresponding to .dimacs file name), test suite sizes and time allowed into benchmarks variable in ModelPLEDGE class
 
-![Screenshot of PLEDGE - Generating products](screenshot1.png)
-
-![Screenshot of PLEDGE - Calculating the coverage](screenshot2.png)
-
-JavaDoc = https://research.henard.net/SPL/PLEDGE/javadoc/
+Then, executes the experiment with method runCompleteExperiment() in class ModelPLEDGE
